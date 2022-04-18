@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const db = require('./db');
+// const db = require('./db');
 const itemRouter = require('./routes/item-router');
 
 const app = express();
@@ -13,14 +13,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(bodyParser.json());
 
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+// db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+  res.send('Hello World!');
 });
 
 app.use('/api', itemRouter);
 
 app.listen(apiPort, () => {
-    console.log(`[Hack.Diversity React Template] - Server running on port ${apiPort}`);
+  console.log(`Server running on port ${apiPort}`);
 });
