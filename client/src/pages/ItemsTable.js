@@ -92,27 +92,22 @@ class ItemsList extends Component {
         },
       },
       {
-        Header: 'Day(s)',
-        accessor: 'daysOfWeek',
+        Header: 'Filename',
+        accessor: 'filename',
         filterable: true,
         Cell: props => {
-          const { daysOfWeek } = props.original;
-          let daysToDisplay = '';
-          if (daysOfWeek && typeof daysOfWeek === 'object') {
-            for (const day in daysOfWeek) {
-              daysToDisplay =
-                daysToDisplay === '' ? daysOfWeek[day] : `${daysToDisplay}, ${daysOfWeek[day]}`;
-            }
-          }
-          return (
-            <span
-              data-daysofweek={daysOfWeek && JSON.stringify(daysOfWeek)}
-              data-daysofweek-by-id={props.original._id}>
-              {daysToDisplay || '-'}
-            </span>
-          );
+          return <span data-name={props.original.filename}>{props.value}</span>;
         },
       },
+      {
+        Header: 'Content',
+        accessor: 'content',
+        filterable: true,
+        Cell: props => {
+          return <span data-name={props.original.content}>{props.value}</span>;
+        },
+      },
+
       {
         Header: 'Timeframe',
         accessor: 'timeframeNote',
@@ -120,25 +115,17 @@ class ItemsList extends Component {
           return <span data-timeframe={props.original.timeframeNote}>{props.value || '-'}</span>;
         },
       },
-      {
-        Header: 'Priority',
-        accessor: 'priority',
-        filterable: true,
-        Cell: props => {
-          return <span data-priority={props.original.priority}>{props.value}</span>;
-        },
-      },
-      {
-        Header: '',
-        accessor: '',
-        Cell: props => {
-          return (
-            <Link data-update-id={props.original._id} to={`/item/update/${props.original._id}`}>
-              Update Item
-            </Link>
-          );
-        },
-      },
+      // {
+      //   Header: '',
+      //   accessor: '',
+      //   Cell: props => {
+      //     return (
+      //       <Link data-update-id={props.original._id} to={`/item/update/${props.original._id}`}>
+      //         Update Item
+      //       </Link>
+      //     );
+      //   },
+      // },
       {
         Header: '',
         accessor: '',

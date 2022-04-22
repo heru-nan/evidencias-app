@@ -186,24 +186,6 @@ class ItemUpdate extends Component {
           <Label>Name: </Label>
           <InputText type="text" value={name} onChange={this.handleChangeInputName} />
 
-          <Fieldset>
-            <legend>Day(s) of the Week: </legend>
-            {Object.keys(DAYS_OF_WEEK).map((dayInt, i) => (
-              <React.Fragment key={DAYS_OF_WEEK[dayInt]}>
-                <DayInput
-                  type="checkbox"
-                  id={DAYS_OF_WEEK[dayInt]}
-                  className="day-checkbox-input"
-                  defaultValue={daysOfWeek[dayInt] && daysOfWeek[dayInt] !== ''}
-                  data-day-index={dayInt}
-                  onChange={this.handleChangeDays}
-                  defaultChecked={daysOfWeek[dayInt] && daysOfWeek[dayInt] !== ''}
-                />
-                <Label htmlFor={DAYS_OF_WEEK[dayInt]}>{DAYS_OF_WEEK[dayInt]}</Label>
-              </React.Fragment>
-            ))}
-          </Fieldset>
-
           <Label>Timeframe Note: </Label>
           <InputText type="text" value={timeframeNote} onChange={this.handleChangeInputTimeframe} />
 

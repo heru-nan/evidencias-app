@@ -30,9 +30,7 @@ const Table = ({ columns, data }) => {
         {headerGroups.map(headerGroup => (
           <TableRow {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map(column => (
-              <TableCell {...column.getHeaderProps()}>
-                {column.render('Header')}
-              </TableCell>
+              <TableCell {...column.getHeaderProps()}>{column.render('Header')}</TableCell>
             ))}
           </TableRow>
         ))}
@@ -43,11 +41,7 @@ const Table = ({ columns, data }) => {
           return (
             <TableRow data-row-item-id={row.values._id} {...row.getRowProps()}>
               {row.cells.map(cell => {
-                return (
-                  <TableCell {...cell.getCellProps()}>
-                    {cell.render('Cell')}
-                  </TableCell>
-                );
+                return <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>;
               })}
             </TableRow>
           );
@@ -138,25 +132,21 @@ class ItemsTable extends Component {
         },
       },
       {
-        Header: 'Day(s)',
-        accessor: 'daysOfWeek',
+        Header: 'Filename',
+        accessor: 'filename',
         // filterable: true,
         Cell: props => {
-          const { daysOfWeek } = props.cell.row.original;
-          let daysToDisplay = '';
-          if (daysOfWeek && typeof daysOfWeek === 'object') {
-            for (const day in daysOfWeek) {
-              daysToDisplay =
-                daysToDisplay === '' ? daysOfWeek[day] : `${daysToDisplay}, ${daysOfWeek[day]}`;
-            }
-          }
-          return (
-            <span
-              data-daysofweek={daysOfWeek && JSON.stringify(daysOfWeek)}
-              data-daysofweek-by-id={props.value}>
-              {daysToDisplay || '-'}
-            </span>
-          );
+          const { original } = props.cell.row;
+          return <span data-name={original.filename}>{props.value}</span>;
+        },
+      },
+      {
+        Header: 'Content',
+        accessor: 'content',
+        // filterable: true,
+        Cell: props => {
+          const { original } = props.cell.row;
+          return <span data-name={original.content}>{props.value}</span>;
         },
       },
       {
@@ -167,28 +157,19 @@ class ItemsTable extends Component {
           return <span data-timeframe={original.timeframeNote}>{props.value || '-'}</span>;
         },
       },
-      {
-        Header: 'Priority',
-        accessor: 'priority',
-        // filterable: true,
-        Cell: props => {
-          const { original } = props.cell.row;
-          return <span data-priority={original.priority}>{props.value}</span>;
-        },
-      },
-      {
-        Header: 'Update',
-        accessor: '_update',
-        Cell: props => {
-          const { original } = props.cell.row;
+      // {
+      //   Header: 'Update',
+      //   accessor: '_update',
+      //   Cell: props => {
+      //     const { original } = props.cell.row;
 
-          return (
-            <Link data-update-id={original._id} to={`/item/update/${original._id}`}>
-              Update
-            </Link>
-          );
-        },
-      },
+      //     return (
+      //       <Link data-update-id={original._id} to={`/item/update/${original._id}`}>
+      //         Update
+      //       </Link>
+      //     );
+      //   },
+      // },
       {
         Header: 'Delete',
         accessor: '_delete',

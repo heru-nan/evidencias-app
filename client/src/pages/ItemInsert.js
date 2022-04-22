@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { shared } from '../constants';
 import api from '../api';
+import axios from 'axios';
 
 import styled from 'styled-components';
 
@@ -71,53 +72,15 @@ const CancelButton = styled.a.attrs({
   margin: 15px 15px 15px 5px;
 `;
 
-class ItemInsert extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: '',
-      daysOfWeek: {},
-      timeframeNote: '',
-      priority: 0,
-      content: '',
-    };
-  }
-
-  handleChangeInputName = async event => {
+const ItemInsert = () => {
+  const [name, setName] = useState('');
+  const [file, setFile] = useState(null);
+  const handleChangeInputName = async event => {
     const name = event.target.value;
-    this.setState({ name });
+    setName(name);
   };
 
-  handleChangeDays = async event => {
-    const { checked, value } = event.target;
-    const { daysOfWeek } = this.state;
-    const { DAYS_OF_WEEK } = shared;
-
-    if (checked && !daysOfWeek[value]) {
-      daysOfWeek[value] = DAYS_OF_WEEK[value];
-    } else if (!checked && daysOfWeek[value]) {
-      delete daysOfWeek[value];
-    }
-    this.setState({ daysOfWeek });
-  };
-
-  handleChangeInputTimeframe = async event => {
-    const timeframeNote = event.target.value;
-    this.setState({ timeframeNote });
-  };
-
-  handleChangeInputPriority = async event => {
-    const priority = event.target.validity.valid ? event.target.value : this.state.priority;
-
-    this.setState({ priority });
-  };
-
-  handleChangeInputContent = async event => {
-    const content = event.target.value;
-    this.setState({ content });
-  };
-
-  insertSingleItem = item => {
+  const insertSingleItem = item => {
     return api
       .insertItem(item)
       .then(resp => {
@@ -136,90 +99,55 @@ class ItemInsert extends Component {
       });
   };
 
-  handleInsertItem = event => {
+  const handleInsertItem = event => {
     event.preventDefault();
+    let formData = new FormData();
+    formData.append('file', file);
+    formData.append('name', name);
 
-    const { name, daysOfWeek, timeframeNote, priority, content } = this.state;
-    const item = { name, daysOfWeek, timeframeNote, priority, content };
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
 
-    this.insertSingleItem(item)
-      .then(resp => {
-        console.log('handleInsertItem: resp');
-        console.log(resp);
-        if (typeof resp === 'object' && resp.status < 300 && resp.status >= 200) {
-          window.alert('Item inserted successfully');
-          this.setState({
-            name: '',
-            daysOfWeek: {},
-            timeframeNote: '',
-            priority: 0,
-            content: '',
-          });
-        } else {
-          throw resp;
-        }
+    axios
+      .post('http://localhost:3000/api/item', formData, {
+        headers: {
+          'Content-type': 'multipart/form-data',
+        },
+      })
+      .then(res => {
+        console.log(`Success` + res.data);
       })
       .catch(err => {
-        // TODO: pass error object correctly so that things like validation errors can be displayed to user
-        window.alert(`There was an error creating the item... :(`);
-        console.log('handleInsertItem: err');
         console.log(err);
       });
   };
 
-  render() {
-    const { name, daysOfWeek, timeframeNote, priority, content } = this.state;
+  const handleChangeFile = event => {
+    if (!event.target.files[0]) return;
+    setFile(event.target.files[0]);
+  };
 
-    const { DAYS_OF_WEEK } = shared;
+  return (
+    <Wrapper>
+      <Title>Subir Evidencias</Title>
 
-    return (
-      <Wrapper>
-        <Title>Create Item</Title>
-
-        <Label>Name: </Label>
-        <InputText type="text" value={name} onChange={this.handleChangeInputName} />
-
-        <Fieldset>
-          <legend>Day(s) of the Week: </legend>
-          {Object.keys(DAYS_OF_WEEK).map((day, i) => (
-            <React.Fragment key={day}>
-              <Label htmlFor={day}>
-                <DayInput
-                  type="checkbox"
-                  id={day}
-                  value={day}
-                  onChange={this.handleChangeDays}
-                  checked={typeof daysOfWeek[day] === 'string'}
-                />
-                {DAYS_OF_WEEK[day]}
-              </Label>
-            </React.Fragment>
-          ))}
-        </Fieldset>
-
-        <Label>Timeframe Note: </Label>
-        <InputText type="text" value={timeframeNote} onChange={this.handleChangeInputTimeframe} />
-
-        <Label>Priority: </Label>
-        <InputText
-          type="number"
-          step="0.1"
-          lang="en-US"
-          min="0"
-          max="1000"
-          pattern="[0-9]+([,\.][0-9]+)?"
-          value={priority}
-          onChange={this.handleChangeInputPriority}
+      <Label>Name: </Label>
+      <InputText type="text" value={name} onChange={handleChangeInputName} />
+      <Fieldset>
+        <Label>Subir un documento</Label>
+        <input
+          type="file"
+          name="file"
+          className="form-control"
+          id="customFile"
+          onChange={handleChangeFile}
         />
-
-        <Label>Content: </Label>
-        <InputText type="textarea" value={content} onChange={this.handleChangeInputContent} />
-
-        <Button onClick={this.handleInsertItem}>Add Item</Button>
-        <CancelButton href={'/items'}>Cancel</CancelButton>
-      </Wrapper>
-    );
-  }
-}
+      </Fieldset>
+      <Button onClick={handleInsertItem}>Add Item</Button>
+      <CancelButton href={'/items'}>Cancel</CancelButton>
+    </Wrapper>
+  );
+};
 
 export default ItemInsert;
