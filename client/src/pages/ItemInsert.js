@@ -117,6 +117,7 @@ const ItemInsert = () => {
       })
       .then(res => {
         console.log(`Success` + res.data);
+        window.location.href = '/items';
       })
       .catch(err => {
         console.log(err);
@@ -132,7 +133,7 @@ const ItemInsert = () => {
     <Wrapper>
       <Title>Subir Evidencias</Title>
 
-      <Label>Name: </Label>
+      <Label>Nombre: </Label>
       <InputText type="text" value={name} onChange={handleChangeInputName} />
       <Fieldset>
         <Label>Subir un documento</Label>
@@ -144,8 +145,8 @@ const ItemInsert = () => {
           onChange={handleChangeFile}
         />
       </Fieldset>
-      <Button onClick={handleInsertItem}>Add Item</Button>
-      <CancelButton href={'/items'}>Cancel</CancelButton>
+      <Button onClick={handleInsertItem}>Subir</Button>
+      <CancelButton href={'/items'}>Cancelar</CancelButton>
     </Wrapper>
   );
 };

@@ -123,7 +123,7 @@ class ItemsTable extends Component {
         },
       },
       {
-        Header: 'Name',
+        Header: 'Nombre',
         accessor: 'name',
         // filterable: true,
         Cell: props => {
